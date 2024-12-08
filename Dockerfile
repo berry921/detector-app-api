@@ -11,9 +11,6 @@ RUN pip install -r requirements.txt
 # Linux用PyTorchインストール
 RUN pip install torch==1.13.1+cpu torchvision==0.14.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
 
-# "building..."を表示させる処理
-RUN echo "building..."
-
 # 特定のネットワークポートをコンテナ実行時にリッスン
 EXPOSE 8080
 

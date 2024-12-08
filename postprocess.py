@@ -11,7 +11,7 @@ def make_color(labels):
 
 def make_line(result_image):
     """枠線を作成"""
-    line = round(0.002 * max(result_image.shape[0:2])) + 1
+    line = round(0.00045 * max(result_image.shape[0:2])) + 1
     return line
 
 

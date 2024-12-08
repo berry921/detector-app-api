@@ -7,6 +7,9 @@ from aws_s3 import upload_to_s3
 from postprocess import draw_lines, draw_texts, make_color, make_line
 from preparation import load_image
 from preprocess import image_to_tensor
+from pathlib import Path
+
+basedir = Path(__name__).parent
 
 
 def detection(request):
@@ -20,7 +23,7 @@ def detection(request):
 
     # 学習済みモデルの読み込み
     try:
-        model = torch.load("model.pt")
+        model = torch.load("modelv2.pt")
     except FileNotFoundError:
         return jsonify("The model is not found"), 404
 
@@ -31,9 +34,9 @@ def detection(request):
 
     result_image = np.array(image.copy())
     # 学習済みモデルが検知した物体の画像に枠線とラベルを追記
-    for box, label, score in zip(output["boxes"], output["labels"], output["scores"]):
-        # スコアが0.6以上かつ重複していないラベルに絞り込み
-        if score >= 0.6 and labels[label] not in dict_results:
+    for i, (box, label, score) in enumerate(zip(output["boxes"], output["labels"], output["scores"])):
+        # スコアが0.9以上
+        if score >= 0.9:
             # 枠線の色を決定
             color = make_color(labels)
             # 枠線の作成
@@ -44,9 +47,12 @@ def detection(request):
             # 画像に枠線を追記
             draw_lines(c1, c2, result_image, line, color)
             # 画像にテキストラベルを追記
-            draw_texts(result_image, line, c1, color, labels[label]+f": {round(100*score.item())}")
+            draw_texts(result_image, line, c1, color, labels[label]+f"{i}: {round(100*score.item())}%")
             # 検知されたラベルとスコアの辞書を作成
-            dict_results[labels[label]] = round(100 * score.item())
+            dict_results[labels[label]+f"{i}"] = round(100 * score.item())
+    # ローカル環境で使うときは下記2行のコメントアウトを外す。代わりに、「# 検知後の画像ファイルを保存」の下の行のコマンドと、S3へのアップロードコマンドをコメントアウトする。
+    # imagedir = str(basedir / 'tmp.jpg')
+    # cv2.imwrite(imagedir, cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
     # 検知後の画像ファイルを保存
     cv2.imwrite('/tmp/tmp.jpg', cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
     # S3にアップロード

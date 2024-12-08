@@ -18,5 +18,4 @@ def load_image(request, scale=1080):
     print(reshaped_size)
     # 画像データのサイズ変更
     image = image_obj.resize(reshaped_size)
-    # return image, filename
-    return image, "tmp.jpg"
+    return image

@@ -7,8 +7,6 @@ COPY . ${LAMBDA_TASK_ROOT}
 # pipのバージョン更新およびライブラリインストール
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
-# Linux用PyTorchインストール
 RUN pip install torch==1.13.1+cpu torchvision==0.14.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
 
 # 特定のネットワークポートをコンテナ実行時にリッスン

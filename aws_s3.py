@@ -4,7 +4,7 @@ from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
 def upload_to_s3(file_name, bucket_name, object_name=None):
     """
-    S3にファイルをアップロードする関数
+    AWS S3にファイルをアップロードする関数
 
     :param file_name: ローカルファイルパス
     :param bucket_name: アップロード先のS3バケット名
@@ -30,7 +30,7 @@ def upload_to_s3(file_name, bucket_name, object_name=None):
 
 def download_from_s3(bucket_name, object_name, file_name=None):
     """
-    S3からファイルをダウンロードする関数
+    AWS S3からファイルをダウンロードする関数
 
     :param bucket_name: S3バケット名
     :param object_name: S3上のオブジェクト名 (ダウンロード対象)

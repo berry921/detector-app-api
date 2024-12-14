@@ -23,7 +23,7 @@ def detection(request):
 
     # 学習済みモデルの読み込み
     try:
-        model = torch.load("modelv2.pt")
+        model = torch.load("model.pt")
     except FileNotFoundError:
         return jsonify("The model is not found"), 404
 

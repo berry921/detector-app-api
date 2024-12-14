@@ -7,7 +7,7 @@
 1. 使用している環境にpython, git, dockerをインストール。
 2. 下記コマンドを実行し、本リポジトリをclone。
 ```shell
-$ git clone git@github.com:berry921/detector-app-api
+$ git clone git@github.com:berry921/detector-app-api.git
 ```
 3. 下記pythonコードを実行して学習済み物体検知モデル model.pt を取得し、calculation.pyと同フォルダに配置。
 ```python

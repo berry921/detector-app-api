@@ -53,7 +53,7 @@ $ python download_model.py
 
 2. 下記dockerコマンドを実行し、コンテナイメージをビルド。
 ```shell
-$ docker build -t detector-app-api .
+$ docker build --platform linux/amd64 -t detector-app-api .
 ```
 3. 下記dockerコマンドを実行し、AWS ECRにプッシュできるようタグ付け。
 ```shell

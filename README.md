@@ -1,6 +1,15 @@
 # 😎物体検知API😎
 
-物体検知APIをAWS lambda上にコンテナデプロイするためのコード一式。
+AWS lambda上に物体検知APIをコンテナデプロイするためのコード一式。\
+本APIにより、以下のような物体検知結果を得ることができる。
+
+<img src='./marlion_result.jpg' alt='image' width='800px'></img>
+```shell
+{'backpack0': 99, 'cell phone1': 99, 'person10': 91, 'person11': 91, 'person12': 90, 'person2': 99, 'person3': 98, 'person4': 98, 'person5': 97, 'person6': 97, 'person7': 94, 'person8': 92, 'person9': 92}
+```
+**（参考図書）**\
+Python FlaskによるWebアプリ開発入門 - 物体検知アプリ&機械学習APIの作り方 -\
+佐藤 昌基、平田 哲也[著] 寺田 学[監修] 翔泳社
 
 ## 準備
 

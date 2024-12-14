@@ -86,13 +86,13 @@ $ python send_image.py <your_aws_lambda_function_url> <path_to_your_image_file>
 ```
 3. 下記のpythonコードを"download_image.py"といった名前を付けて保存。
 ```python:download_image.py
-import sys\
-import urllib.parse\
-import urllib.request\
-\
-def download_image(url, result_file_path):\
-    with urllib.request.urlopen(url) as web_file:\
-        with open(result_file_path, "wb") as local_file:\
+import sys
+import urllib.parse
+import urllib.request
+
+def download_image(url, result_file_path):
+    with urllib.request.urlopen(url) as web_file:
+        with open(result_file_path, "wb") as local_file:
             local_file.write(web_file.read())
 
 

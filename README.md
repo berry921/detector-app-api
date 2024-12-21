@@ -98,12 +98,12 @@ docker push <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/detect
 
 1. 下記コマンドを実行すると物体検知APIが実行され、検知結果が返ってくる。
 ```shell
-python send_image.py <your_aws_lambda_function_url> <path_to_your_image_file> --scale <scale>
+python send_image.py <{your_aws_lambda_function_url}/detect> <path_to_your_image_file> --scale <scale>
 # scale引数は基本的に指定しなくてよい（指定しなければ、推奨のデフォルト設定(1080)で実行される）。
 # 1080より大きくするほど物体検知時の画像サイズが大きくなり、検知精度は上がるが、lambdaのメモリ上限(3008MB)を超えてエラーとなることが多いため非推奨。
 # デフォルト値(1080)でもエラーとなることがあるため、その場合はscaleを小さくする。
 ```
 2. 下記コマンドを実行すると物体検知した結果を反映した画像ファイルをダウンロードできる。
 ```shell
-python download_image.py <your_aws_lambda_function_url> <path_to_download_image_file>
+python download_image.py <{your_aws_lambda_function_url}/download> <path_to_download_image_file>
 ```

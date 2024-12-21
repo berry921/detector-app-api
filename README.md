@@ -19,21 +19,21 @@ Python FlaskによるWebアプリ開発入門 - 物体検知アプリ&機械学�
 
 2. 下記コマンドで、本リポジトリをclone → cloneしたフォルダへ移動。
 ```shell
-$ git clone git@github.com:berry921/detector-app-api.git
-$ cd detector-app-api
+git clone git@github.com:berry921/detector-app-api.git
+cd detector-app-api
 ```
 3. venvでpython仮想環境を作成。
 ```shell
-$ python -m venv .venv    # 作成する仮想環境名(.venv)は任意
+python -m venv .venv    # 作成する仮想環境名(.venv)は任意
 ```
 4. 作成した仮想環境をアクティベートしてtorch、torchvisionをインストール。
 ```shell
-$ . .venv\bin\activate
-$ pip install torch==1.13.1+cpu torchvision==0.14.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+. .venv\bin\activate
+pip install torch==1.13.1+cpu torchvision==0.14.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
 ```
 5. 下記コマンドを実行し、物体検知モデル model.pt をダウンロード。
 ```shell
-$ python download_model.py
+python download_model.py
 ```
 6. AWS S3に detector-app-api-tmp という名前のバケットを作成。\
 （本APIでは、物体検知後に作成された画像ファイルをS3に保存するため、予め作成しておく。）
@@ -44,11 +44,11 @@ $ python download_model.py
 
 2. 下記dockerコマンドを実行し、コンテナイメージをビルド。
 ```shell
-$ docker build --platform linux/amd64 -t detector-app-api .
+docker build --platform linux/amd64 -t detector-app-api .
 ```
 3. 下記dockerコマンドを実行し、AWS ECRにプッシュできるようタグ付け。
 ```shell
-$ docker tag detector-app-api <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/detector-app-api:latest
+docker tag detector-app-api <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/detector-app-api:latest
 ```
 4. 下記AWS CLIコマンドを実行し、AWSアカウントへのログインプロファイルを設定。
 ```shell
@@ -64,11 +64,11 @@ CLI profile name [123456789011_ReadOnly]: my-dev-profile # ここで作成する
 ```
 5. 下記awsコマンドを実行し、AWS ECRにログイン。
 ```shell
-$ aws ecr get-login-password --profile my-dev-profile | docker login --username AWS --password-stdin <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com
+aws ecr get-login-password --profile my-dev-profile | docker login --username AWS --password-stdin <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com
 ```
 6. 下記dockerコマンドを実行し、コンテナイメージをAWS ECRへプッシュ。
 ```shell
-$ docker push <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/detector-app-api:latest
+docker push <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/detector-app-api:latest
 ```
 7. AWS lambdaで、AWS ECRへプッシュしたコンテナイメージからlambda関数を作成。
 
@@ -98,9 +98,12 @@ $ docker push <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/dete
 
 1. 下記コマンドを実行すると物体検知APIが実行され、検知結果が返ってくる。
 ```shell
-$ python send_image.py <your_aws_lambda_function_url> <path_to_your_image_file>
+python send_image.py <your_aws_lambda_function_url> <path_to_your_image_file> --scale <scale>
+# scale引数は基本的に指定しなくてよい（指定しなければ、推奨のデフォルト設定(1080)で実行される）。
+# 1080より大きくするほど物体検知時の画像サイズが大きくなり、検知精度は上がるが、lambdaのメモリ上限(3008MB)を超えてエラーとなることが多いため非推奨。
+# デフォルト値(1080)でもエラーとなることがあるため、その場合はscaleを小さくする。
 ```
 2. 下記コマンドを実行すると物体検知した結果を反映した画像ファイルをダウンロードできる。
 ```shell
-$ python download_image.py <your_aws_lambda_function_url> <path_to_download_image_file>
+python download_image.py <your_aws_lambda_function_url> <path_to_download_image_file>
 ```

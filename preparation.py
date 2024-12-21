@@ -3,9 +3,9 @@ import cv2
 import PIL
 
 
-def load_image(request, scale=1080):
+def load_image(image, scale):
     """画像の読み込み"""
-    _bytes = np.frombuffer(request.data, np.uint8)
+    _bytes = np.frombuffer(image.read(), np.uint8)
     original_np_image = cv2.imdecode(_bytes, flags=cv2.IMREAD_COLOR)
     np_image = cv2.cvtColor(original_np_image, cv2.COLOR_BGR2RGB)
     # 画像データのオブジェクトを作成

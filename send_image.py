@@ -1,26 +1,26 @@
-import sys
-import urllib.parse
-import urllib.request
-import json
+import requests
+import argparse
 
 
-def send_image(url, image):
+def send_image(url, image, scale):
     # read image data
     with open(image, "rb") as f:
-        reqbody = f.read()
+        file = {'image': f.read()}
     f.close()
 
-    # create request with urllib
-    req = urllib.request.Request(
-        url=url,
-        data=reqbody,
-        method="POST",
-        headers={"Content-Type": "application/octet-stream"}
-    )
-    with urllib.request.urlopen(req) as res:
-        print(json.loads(res.read()))
+    data = {"scale": scale}
+
+    with requests.post(url, data=data, files=file) as response:
+        if response.status_code == 200:
+            print("Success:", response.json())
+        else:
+            print("Error:", response.status_code, response.text)
 
 
 if __name__ == "__main__":
-    url, image = sys.argv[1], sys.argv[2]
-    send_image(url, image)
+    parser = argparse.ArgumentParser(description='upload image and detect.')
+    parser.add_argument('url', type=str, help='url')
+    parser.add_argument('image', type=str, help='image file path')
+    parser.add_argument('--scale', type=int, default=1080, help='scale (default: 1080)')
+    args = parser.parse_args()
+    send_image(args.url, args.image, args.scale)

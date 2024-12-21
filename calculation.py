@@ -12,12 +12,12 @@ from pathlib import Path
 basedir = Path(__name__).parent
 
 
-def detection(request):
+def detection(image, scale):
     dict_results = {}
     # ラベルの読み込み
     labels = current_app.config["LABELS"]
     # 画像の読み込み
-    image = load_image(request)
+    image = load_image(image, scale)
     # 画像データをテンソル型の数値データへ変換
     image_tensor = image_to_tensor(image)
 
@@ -57,4 +57,4 @@ def detection(request):
     cv2.imwrite('/tmp/tmp.jpg', cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
     # S3にアップロード
     upload_to_s3('/tmp/tmp.jpg', 'detector-app-api-tmp', 'tmp.jpg')
-    return jsonify(dict_results), 201
+    return jsonify(dict_results), 200

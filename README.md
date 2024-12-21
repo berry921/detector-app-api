@@ -19,7 +19,7 @@ Python FlaskによるWebアプリ開発入門 - 物体検知アプリ&機械学�
 
 2. 下記コマンドで、本リポジトリをclone → cloneしたフォルダへ移動。
 ```shell
-git clone git@github.com:berry921/detector-app-api.git
+git clone git@github.com:berry921-public/detector-app-api.git
 cd detector-app-api
 ```
 3. venvでpython仮想環境を作成。

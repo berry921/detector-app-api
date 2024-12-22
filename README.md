@@ -1,7 +1,7 @@
 # 😎 物体検知API 😎
 
 AWS lambdaに物体検知APIをコンテナデプロイするためのコード一式。本APIをAWS lambdaにデプロイすることで、以下のような物体検知結果が得られる。\
-<a ref='https://arxiv.org/abs/1703.06870'>Mask R-CNN論文</a> の ResNet-50-FPN バックボーンを備えた Mask R-CNN モデルを使用。
+[Mask R-CNN論文](https://arxiv.org/abs/1703.06870) の ResNet-50-FPN バックボーンを備えた Mask R-CNN モデルを使用。
 
 **物体検知結果例**\
 <img src='./marlion.jpg' alt='before' width='800px'></img>

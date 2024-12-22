@@ -1,4 +1,4 @@
-import sys
+import argparse
 import urllib.parse
 import urllib.request
 
@@ -10,5 +10,8 @@ def download_image(url, result_file_path):
 
 
 if __name__ == "__main__":
-    url, result_file_path = sys.argv[1], sys.argv[2]
-    download_image(url, result_file_path)
+    parser = argparse.ArgumentParser(description='download most recent detected image file.')
+    parser.add_argument('url', type=str, help="your AWS lambda function url. Don't forget to add '/download' to the end of your URL.")
+    parser.add_argument('image', type=str, help="image file path to be downloaded. jpeg format.")
+    args = parser.parse_args()
+    download_image(args.url, args.image)

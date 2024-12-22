@@ -74,9 +74,11 @@ $ docker push <your_aws_account_id>.dkr.ecr.<your_aws_region>.amazonaws.com/dete
 ```
 7. AWS lambdaで、AWS ECRへプッシュしたコンテナイメージからlambda関数を作成。
 
-8. メモリを3008MBに設定し、関数URLを作成。関数URLの認証タイプは None としておく。
+8. AWS lambdaの一般設定にて、メモリを3008MB、タイムアウトを3分に設定。
 
-9. 作成したlambda関数に、先に作成したAWS S3バケットへのアクセス権限を付与する。具体的には、AWS IAMで下記JSONで表されるポリシーを作成し、lambda関数のIAMロールにアタッチする。
+9. 関数URLを作成。関数URLの認証タイプは None としておく。
+
+10. 作成したlambda関数に、先に作成したAWS S3バケットへのアクセス権限を付与。具体的には、AWS IAMで下記JSONで表されるポリシーを作成し、lambda関数のIAMロールにアタッチする。
 ```json
 {
     "Version": "2012-10-17",

@@ -1,6 +1,6 @@
 # 😎 Object Detection API 😎
 
-Codees for deploying an object detection API as a container image on AWS Lambda. By deploying this API to AWS Lambda, you can obtain object detection result like example below.\
+Codes for deploying an object detection API as a container image on AWS Lambda. By deploying this API to AWS Lambda, you can obtain object detection result like example below.\
 This API uses the Mask R-CNN model with a ResNet-50-FPN backbone based on the [Mask R-CNN paper](https://arxiv.org/abs/1703.06870).
 
 **Example Object Detection Result**\
@@ -22,7 +22,7 @@ Refer to respective tools' web pages for your installation.
 
 2. Clone this repository, and change to the cloned folder by following commands:
 ```shell
-$ git clone https://github.com/berry921-public/detector-app-api.git
+$ git clone https://github.com/berry921/detector-app-api.git
 $ cd detector-app-api
 ```
 3. Create a Python virtual environment by venv.

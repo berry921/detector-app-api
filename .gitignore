@@ -26,8 +26,9 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# model
+# original_in_this_repository
 model.pt
+.vscode/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

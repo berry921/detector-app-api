@@ -1,13 +1,14 @@
+from pathlib import Path
+
 import cv2
 import numpy as np
 import torch
 from flask import current_app, jsonify
-from aws_s3 import upload_to_s3
 
+from aws_s3 import upload_to_s3
 from postprocess import draw_lines, draw_texts, make_color, make_line
 from preparation import load_image
 from preprocess import image_to_tensor
-from pathlib import Path
 
 basedir = Path(__name__).parent
 
@@ -34,7 +35,9 @@ def detection(image, scale):
 
     result_image = np.array(image.copy())
     # 学習済みモデルが検知した物体の画像に枠線とラベルを追記
-    for i, (box, label, score) in enumerate(zip(output["boxes"], output["labels"], output["scores"])):
+    for i, (box, label, score) in enumerate(
+        zip(output["boxes"], output["labels"], output["scores"])
+    ):
         # スコアが0.9以上
         if score >= 0.9:
             # 枠線の色を決定
@@ -47,14 +50,20 @@ def detection(image, scale):
             # 画像に枠線を追記
             draw_lines(c1, c2, result_image, line, color)
             # 画像にテキストラベルを追記
-            draw_texts(result_image, line, c1, color, labels[label]+f"{i}: {round(100*score.item())}%")
+            draw_texts(
+                result_image,
+                line,
+                c1,
+                color,
+                labels[label] + f"{i}: {round(100*score.item())}%",
+            )
             # 検知されたラベルとスコアの辞書を作成
-            dict_results[labels[label]+f"{i}"] = round(100 * score.item())
+            dict_results[labels[label] + f"{i}"] = round(100 * score.item())
     # ローカル環境で使うときは下記2行のコメントアウトを外す。代わりに、「# 検知後の画像ファイルを保存」の下の行のコマンドと、S3へのアップロードコマンドをコメントアウトする。
     # imagedir = str(basedir / 'tmp.jpg')
     # cv2.imwrite(imagedir, cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
     # 検知後の画像ファイルを保存
-    cv2.imwrite('/tmp/tmp.jpg', cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
+    cv2.imwrite("/tmp/tmp.jpg", cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
     # S3にアップロード
-    upload_to_s3('/tmp/tmp.jpg', 'detector-app-api-tmp', 'tmp.jpg')
+    upload_to_s3("/tmp/tmp.jpg", "detector-app-api-tmp", "tmp.jpg")
     return jsonify(dict_results), 200

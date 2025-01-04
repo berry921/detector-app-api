@@ -1,18 +1,19 @@
 import os
-from flask import Flask
-from bp import api
-from config import config
+
 from a2wsgi import WSGIMiddleware
+from flask import Flask
 from mangum import Mangum
+
+from blueprint import api
+from config import config
 
 config_name = os.environ.get("CONFIG", "local")
 
 app = Flask(__name__)
 app.config.from_object(config[config_name])
-# blueprintをアプリに登録
 app.register_blueprint(api)
 
-# FlaskアプリをASGIアプリに変換
+# transform Flask app to ASGI app
 asgi_app = WSGIMiddleware(app)
-# Lambda用のMangumハンドラー
+# Mangum handler for Lambda
 handler = Mangum(asgi_app)

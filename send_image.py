@@ -3,13 +3,13 @@ import argparse
 import requests
 
 
-def send_image(url, image, scale):
+def send_image(url, image, scale, threshold):
     # read image data
     with open(image, "rb") as f:
         file = {"image": f.read()}
     f.close()
 
-    data = {"scale": scale}
+    data = {"scale": scale, "threshold": threshold}
 
     with requests.post(url, data=data, files=file) as response:
         if response.status_code == 200:
@@ -33,5 +33,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--scale", type=int, default=1080, help="image scale (default: 1080)"
     )
+    parser.add_argument(
+        "--threshold", type=float, default=0.9, help="detection threshold (default 0.9)"
+    )
     args = parser.parse_args()
-    send_image(args.url, args.image, args.scale)
+    send_image(args.url, args.image, args.scale, args.threshold)

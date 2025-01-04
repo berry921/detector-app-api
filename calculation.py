@@ -13,43 +13,42 @@ from preprocess import image_to_tensor
 basedir = Path(__name__).parent
 
 
-def detection(image, scale):
+def detection(image, scale, threshold=0.9):
     dict_results = {}
-    # ラベルの読み込み
+    # load labels
     labels = current_app.config["LABELS"]
-    # 画像の読み込み
+    # load image
     image = load_image(image, scale)
-    # 画像データをテンソル型の数値データへ変換
+    # convert the image to tensor
     image_tensor = image_to_tensor(image)
-
-    # 学習済みモデルの読み込み
+    # load the pretrained model
     try:
         model = torch.load("model.pt")
     except FileNotFoundError:
         return jsonify("The model is not found"), 404
 
-    # モデルを推論モードに切り替え
+    # switch the model to inference mode
     model = model.eval()
-    # 推論の実行
+    # inference
     output = model([image_tensor])[0]
 
     result_image = np.array(image.copy())
-    # 学習済みモデルが検知した物体の画像に枠線とラベルを追記
+    # add borders and labels detected by pretrained model on the image
     for i, (box, label, score) in enumerate(
         zip(output["boxes"], output["labels"], output["scores"])
     ):
-        # スコアが0.9以上
-        if score >= 0.9:
-            # 枠線の色を決定
+        # if score is above threshold
+        if score >= threshold:
+            # decide border color randomly
             color = make_color(labels)
-            # 枠線の作成
+            # make border
             line = make_line(result_image)
-            # 検知画像の枠線とテキストラベルの枠線の位置情報
+            # positions of the border of the detected image and the border of the text label
             c1 = int(box[0]), int(box[1])
             c2 = int(box[2]), int(box[3])
-            # 画像に枠線を追記
+            # add border on the image
             draw_lines(c1, c2, result_image, line, color)
-            # 画像にテキストラベルを追記
+            # add text label on the image
             draw_texts(
                 result_image,
                 line,
@@ -57,13 +56,14 @@ def detection(image, scale):
                 color,
                 labels[label] + f"{i}: {round(100*score.item())}%",
             )
-            # 検知されたラベルとスコアの辞書を作成
+            # create a dictionary of detected labels and scores
             dict_results[labels[label] + f"{i}"] = round(100 * score.item())
-    # ローカル環境で使うときは下記2行のコメントアウトを外す。代わりに、「# 検知後の画像ファイルを保存」の下の行のコマンドと、S3へのアップロードコマンドをコメントアウトする。
-    # imagedir = str(basedir / 'tmp.jpg')
+    # If you are trying at a local environment, uncomment the following two lines (lines 63 - 64).
+    # Instead, comment out lines 66 and 68.
+    # imagedir = str(basedir / "tmp.jpg")
     # cv2.imwrite(imagedir, cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
-    # 検知後の画像ファイルを保存
+    # save detected image
     cv2.imwrite("/tmp/tmp.jpg", cv2.cvtColor(result_image, cv2.COLOR_RGB2BGR))
-    # S3にアップロード
+    # upload image to S3
     upload_to_s3("/tmp/tmp.jpg", "detector-app-api-tmp", "tmp.jpg")
     return jsonify(dict_results), 200

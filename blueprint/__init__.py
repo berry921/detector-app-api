@@ -1,4 +1,5 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, jsonify, make_response, request
+
 import calculation
 from aws_s3 import download_from_s3
 
@@ -12,24 +13,25 @@ def index():
 
 @api.post("/detect")
 def detection():
-    # requestからパラメータ scale を取得
+    # get parameters scale and threshold from request
     scale = request.form.get("scale", type=int)
+    thereshold = request.form.get("threshold", type=float)
     if scale is None:
-        return jsonify({'error': "Missing 'scale' parameter"}), 400
+        return jsonify({"error": "Missing 'scale' parameter"}), 400
 
     # requestから画像を取得
-    image = request.files.get('image')
+    image = request.files.get("image")
     if image is None:
-        return jsonify({'error': "Missing 'image' file"}), 400
+        return jsonify({"error": "Missing 'image' file"}), 400
 
-    return calculation.detection(image, scale)
+    return calculation.detection(image, scale, thereshold)
 
 
 @api.get("/download")
 def download():
     response = make_response()
-    download_from_s3('detector-app-api-tmp', 'tmp.jpg', '/tmp/tmp.jpg')
-    response.data = open('/tmp/tmp.jpg', "rb").read()
-    response.headers['Content-Disposition'] = 'attachment; filename=result.jpg'
+    download_from_s3("detector-app-api-tmp", "tmp.jpg", "/tmp/tmp.jpg")
+    response.data = open("/tmp/tmp.jpg", "rb").read()
+    response.headers["Content-Disposition"] = "attachment; filename=result.jpg"
     response.mimetype = "image/jpeg"
     return response
